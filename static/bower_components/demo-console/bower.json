@@ -1,0 +1,25 @@
+{
+  "name": "demo-console",
+  "main": "index.js",
+  "version": "1.5.0",
+  "homepage": "https://github.com/piranna/demo-console",
+  "authors": [
+    "Jesús Leganés Combarro \"piranna\" <piranna@gmail.com>"
+  ],
+  "description": "Show a demo console in your HTML",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "Console",
+    "HTML"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

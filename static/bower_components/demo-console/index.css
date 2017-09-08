@@ -1,0 +1,91 @@
+div.democonsole {
+  position: relative;
+  bottom: 20px;
+  left: 0px;
+  z-index: 100;
+
+  height: 30%;
+  width: 100%;
+
+  font-family: monospace;
+  overflow-y: auto;
+}
+
+div.democonsole ul {
+  margin: 0;
+  padding: 6px;
+  list-style-type: none;
+}
+
+div.democonsole ul li {
+  padding-left: 14px;
+  margin-bottom: 5px;
+  display: flex;
+}
+
+div.democonsole ul li:before {
+  color: #888;
+  content: '>';
+  font-weight: bold;
+  position: absolute;
+  margin-left: -14px;
+}
+
+div.democonsole ul li > * {
+  margin-right: 8px;
+}
+
+div.democonsole ul li.info:before {
+  content: 'ℹ';
+}
+
+div.democonsole ul li.error:before {
+  content: '☠';
+}
+
+div.democonsole ul li.warn:before {
+  content: '⚠';
+}
+
+span[data-type=""] {
+  font-weight: bold;
+}
+
+span[data-type="number"], span[data-type="boolean"] {
+  color: navy;
+}
+
+span[data-type="string"] {
+  color: green;
+  white-space: pre;
+}
+
+span[data-type="key"] {
+  vertical-align: top;
+}
+
+span[data-type="info"] {
+  color: blue;
+}
+
+span[data-type="error"] {
+  color: red;
+}
+
+span[data-type="warn"] {
+  color: yellow;
+}
+
+div[data-type="object"] {
+  display: inline-block;
+}
+
+div[data-type="object-key"] {
+  margin-left: 20px;
+}
+
+div.comma-float {
+  clear: both;
+  float: left;
+  color: #222;
+}
