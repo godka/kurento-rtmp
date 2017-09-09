@@ -220,7 +220,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                     });
 
                     var sdpRtpOfferString;
-                    var streamPort = 55000;//TEST PORTS
+                    var streamPort = 55000 + sessionId;
                     var streamIp = '127.0.0.1';//Test ip
                     generateSdpStreamConfig(streamIp, streamPort, function (err, sdpRtpOfferString) {
                         if (err) {
@@ -230,7 +230,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                             if (error) {
                                 return callback(error);
                             }
-                            console.log('start process');
+                            console.log('start process on: rtp://', streamIp, ':', streamPort);
                             return callback(null, sdpAnswer);
                         });
                     });
