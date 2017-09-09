@@ -1,34 +1,4 @@
-[![License badge](https://img.shields.io/badge/license-Apache2-orange.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Documentation badge](https://readthedocs.org/projects/fiware-orion/badge/?version=latest)](http://doc-kurento.readthedocs.org/en/latest/)
-[![Docker badge](https://img.shields.io/docker/pulls/fiware/orion.svg)](https://hub.docker.com/r/fiware/stream-oriented-kurento/)
-[![Support badge]( https://img.shields.io/badge/support-sof-yellowgreen.svg)](http://stackoverflow.com/questions/tagged/kurento)
-
-[![][KurentoImage]][Kurento]
-
-Copyright © 2013-2016 [Kurento]. Licensed under [Apache 2.0 License].
-
-kurento-magic-mirror
-====================
-
-Kurento Java Tutorial: WebRTC in loopback with faceoverlay filter (magic mirror).
-
-Running this tutorial
----------------------
-
-In order to run this tutorial, please read the following [instructions].
-
-What is Kurento
----------------
-
-Kurento is an open source software project providing a platform suitable
-for creating modular applications with advanced real-time communication
-capabilities. For knowing more about Kurento, please visit the Kurento
-project website: http://www.kurento.org.
-
-Kurento is part of [FIWARE]. For further information on the relationship of
-FIWARE and Kurento check the [Kurento FIWARE Catalog Entry]
-
-Kurento is part of the [NUBOMEDIA] research initiative.
+* kurento-rtp-node *
 
 Documentation
 -------------
