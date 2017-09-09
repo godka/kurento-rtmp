@@ -1,4 +1,4 @@
-* kurento-rtp-node *
+# kurento-rtp-node #
 
 Documentation
 -------------
