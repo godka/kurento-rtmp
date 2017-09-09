@@ -219,6 +219,22 @@ function start(sessionId, ws, sdpOffer, callback) {
                         return callback(null, sdpAnswer);
                     });
 
+                    var sdpRtpOfferString;
+                    var streamPort = 55000;//TEST PORTS
+                    var streamIp = '127.0.0.1';//Test ip
+                    generateSdpStreamConfig(streamIp, streamPort, function (err, sdpRtpOfferString) {
+                        if (err) {
+                            return callback(error);
+                        }
+                        rtpEndpoint.processOffer(sdpRtpOfferString, function (error, sdpAnswer) {
+                            if (error) {
+                                return callback(error);
+                            }
+                            console.log('start process');
+                            return callback(null, sdpAnswer);
+                        });
+                    });
+
                     webRtcEndpoint.gatherCandidates(function (error) {
                         if (error) {
                             return callback(error);
@@ -246,13 +262,12 @@ function createMediaElements(pipeline, ws, callback) {
     });
 }
 
-function generateSdpStreamConfig(nodeStreamIp, port) {
+function generateSdpStreamConfig(nodeStreamIp, port, callback) {
     if (typeof nodeStreamIp === 'undefined'
         || nodeStreamIp === null
         || typeof port === 'undefined'
-        || port === null
-    ) {
-        throw new Error('nodeStreamIp and port for generating Sdp Must be setted');
+        || port === null) {
+        return callback('nodeStreamIp and port for generating Sdp Must be setted');
     }
     var sdpRtpOfferString = 'v=0\n';
     sdpRtpOfferString += 'o=- 0 0 IN IP4 ' + nodeStreamIp + '\n';
@@ -262,8 +277,7 @@ function generateSdpStreamConfig(nodeStreamIp, port) {
     sdpRtpOfferString += 'm=video ' + port + ' RTP/AVP 96\n';
     sdpRtpOfferString += 'a=rtpmap:96 VP8/90000\n';
     sdpRtpOfferString += 'a=fmtp:96 packetization-mode=1\n';
-
-    return sdpRtpOfferString;
+    return callback(null, sdpRtpOfferString);
 }
 
 function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
@@ -271,32 +285,11 @@ function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
         if (error) {
             return callback(error);
         }
-        //TRY OK
         rtpEndpoint.connect(webRtcEndpoint, function (error) {
             if (error) {
                 return callback(error);
             }
-            
-            var sdpRtpOfferString;
-            var streamPort = 55000;//TEST PORTS
-            var streamIp = '127.0.0.1';//Test ip
-            
-            try {
-                sdpRtpOfferString = generateSdpStreamConfig(streamIp, streamPort);
-                console.log(sdpRtpOfferString);
-            } catch (error) {
-                console.log(error);
-                return callback(error);
-            }
-            //var sdpRtpOfferString = rtpEndpoint.generateOffer();
-            //console.log('sdp:\n', sdpRtpOfferString);
-            rtpEndpoint.processOffer(sdpRtpOfferString, function (error) {
-                if (error) {
-                    return callback(error);
-                }
-                console.log('start process');
-                return callback(null);
-            });
+            return callback(null);
         });
     });
 
