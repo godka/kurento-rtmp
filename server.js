@@ -216,25 +216,23 @@ function start(sessionId, ws, sdpOffer, callback) {
                             'pipeline': pipeline,
                             'webRtcEndpoint': webRtcEndpoint
                         }
-                        return callback(null, sdpAnswer);
-                    });
-
-                    var sdpRtpOfferString;
-                    var streamPort = 55000 + sessionId;
-                    var streamIp = '127.0.0.1';//Test ip
-                    generateSdpStreamConfig(streamIp, streamPort, function (err, sdpRtpOfferString) {
-                        if (err) {
-                            return callback(error);
-                        }
-                        rtpEndpoint.processOffer(sdpRtpOfferString, function (error, sdpAnswer) {
-                            if (error) {
+                        var streamPort = 55000;
+                        var streamIp = '127.0.0.1';//Test ip
+                        generateSdpStreamConfig(streamIp, streamPort, function (err, sdpRtpOfferString) {
+                            if (err) {
                                 return callback(error);
                             }
-                            console.log('start process on: rtp://', streamIp, ':', streamPort);
-                            return callback(null, sdpAnswer);
+                            rtpEndpoint.processOffer(sdpRtpOfferString, function (error) {
+                                if (error) {
+                                    return callback(error);
+                                }
+                                console.log('start process on: rtp://' + streamIp + ':' + streamPort);
+                                console.log('recv sdp answer:', sdpAnswer);
+                                return callback(null, sdpAnswer);
+                            });
                         });
+                        //return callback(null, sdpAnswer);
                     });
-
                     webRtcEndpoint.gatherCandidates(function (error) {
                         if (error) {
                             return callback(error);
@@ -275,7 +273,7 @@ function generateSdpStreamConfig(nodeStreamIp, port, callback) {
     sdpRtpOfferString += 'c=IN IP4 ' + nodeStreamIp + '\n';
     sdpRtpOfferString += 't=0 0\n';
     sdpRtpOfferString += 'm=video ' + port + ' RTP/AVP 96\n';
-    sdpRtpOfferString += 'a=rtpmap:96 VP8/90000\n';
+    sdpRtpOfferString += 'a=rtpmap:96 H264/90000\n';
     sdpRtpOfferString += 'a=fmtp:96 packetization-mode=1\n';
     return callback(null, sdpRtpOfferString);
 }
@@ -285,12 +283,17 @@ function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
         if (error) {
             return callback(error);
         }
+        //it will cause loop back
+        //see https://groups.google.com/forum/?hl=IT#!searchin/kurento/rtpendpoint/kurento/CiN79QObJWQ/YS-uGhP7t9AJ
+        /*
         rtpEndpoint.connect(webRtcEndpoint, function (error) {
             if (error) {
                 return callback(error);
             }
             return callback(null);
         });
+        */
+        return callback(null);
     });
 
 }
