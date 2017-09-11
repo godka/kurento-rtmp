@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-
+const NodeMediaServer = require('node-media-server');
 var path = require('path');
 var url = require('url');
 var cookieParser = require('cookie-parser')
@@ -38,6 +38,20 @@ var options =
         key: fs.readFileSync('keys/server.key'),
         cert: fs.readFileSync('keys/server.crt')
     };
+
+const rtmp_server_config = {
+    rtmp: {
+        port: 1935,
+        chunk_size: 60000,
+        gop_cache: true,
+        ping: 60,
+        ping_timeout: 30
+    },
+    http: {
+        port: 8000,
+        allow_origin: '*'
+    }
+};
 
 var app = express();
 
@@ -327,3 +341,5 @@ function onIceCandidate(sessionId, _candidate) {
 }
 
 app.use(express.static(path.join(__dirname, 'static')));
+var nms = new NodeMediaServer(rtmp_server_config);
+nms.run();
