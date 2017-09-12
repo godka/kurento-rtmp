@@ -4,11 +4,13 @@ Here is a simple exsample which can provide a pipeline from kurento-webrtc to rt
 
 You can browse https://1029.mythkast.net:8443 to see this exsample.
 
+![image](https://github.com/godka/kurento-rtmp/raw/master/img/rtp.png)
+
 The pipeline is probably like this:
 
 ```
-browser -> WebrtcEndpoint -> [Kurento] -> RtpEndpoint -> 
-[FFmpeg] -> RTMP -> [Node_Media_Server(srs)] -> RTMP -> browser
+[Browser] -> WebrtcEndpoint -> [Kurento] -> RtpEndpoint -> 
+[FFmpeg] -> RTMP -> [Node_Media_Server(srs)] -> RTMP -> [Browser]
 ```
 
 ## Build ##
