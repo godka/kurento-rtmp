@@ -230,10 +230,6 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                         console.log('my session id:', sessionId);
-                        sessions[sessionId] = {
-                            'pipeline': pipeline,
-                            'webRtcEndpoint': webRtcEndpoint
-                        }
                         var streamPort = 55000 + session_index;
                         session_index++;    //change to next port
                         var streamIp = '127.0.0.1';//Test ip
@@ -247,7 +243,13 @@ function start(sessionId, ws, sdpOffer, callback) {
                                 }
                                 console.log('start process on: rtp://' + streamIp + ':' + streamPort);
                                 console.log('recv sdp answer:', sdpAnswer);
-                                bindFFmpeg(streamIp, streamPort, sdpRtpOfferString, ws);
+                                var _ffmpeg_child = bindFFmpeg(streamIp, streamPort, sdpRtpOfferString, ws);
+                                sessions[sessionId] = {
+                                    'pipeline': pipeline,
+                                    'webRtcEndpoint': webRtcEndpoint,
+                                    'rtpEndpoint': rtpEndpoint,
+                                    'ffmpeg_child_process': _ffmpeg_child
+                                }
                                 return callback(null, sdpAnswer);
                             });
                         });
@@ -344,9 +346,13 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
         '-i', path.join(__dirname, streamip + '_' + streamport + '.sdp'),
         '-vcodec', 'copy',
         '-f', 'flv',
-        'rtmp://localhost/live/stream'
+        'rtmp://localhost/live/' + streamip + '_' + streamport
     ].concat();
     var child = spawn('ffmpeg', ffmpeg_args);
+    ws.send(JSON.stringify({
+        id: 'rtmp',
+        message: 'rtmp://' + location.hostname + '/live/' + streamip + '_' + streamport
+    }));
     //ignore stdout
     //this.child.stdout.on('data', this.emit.bind(this, 'data'));
     child.stderr.on('data', function (data) {
@@ -378,6 +384,7 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
             }));
         }
     });
+    return child;
 };
 
 function stop(sessionId) {
@@ -385,7 +392,12 @@ function stop(sessionId) {
         var pipeline = sessions[sessionId].pipeline;
         console.info('Releasing pipeline');
         pipeline.release();
-
+        var child_process = sessions[sessionId].ffmpeg_child_process;
+        if (child_process) {
+            console.info('Killing child process');
+            child_process.kill();
+            delete child_process;
+        }
         delete sessions[sessionId];
         delete candidatesQueue[sessionId];
     }
