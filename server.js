@@ -25,6 +25,10 @@ var ws = require('ws');
 var kurento = require('kurento-client');
 var fs = require('fs');
 var https = require('https');
+var childProcess = require('child_process');
+var spawn = childProcess.spawn;
+var fs = require("fs");
+var path = require('path');
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -54,7 +58,7 @@ const rtmp_server_config = {
 };
 
 var app = express();
-
+var session_index = 0;
 /*
  * Management of sessions
  */
@@ -225,12 +229,13 @@ function start(sessionId, ws, sdpOffer, callback) {
                             pipeline.release();
                             return callback(error);
                         }
-
+                        console.log('my session id:', sessionId);
                         sessions[sessionId] = {
                             'pipeline': pipeline,
                             'webRtcEndpoint': webRtcEndpoint
                         }
-                        var streamPort = 55000;
+                        var streamPort = 55000 + session_index;
+                        session_index++;    //change to next port
                         var streamIp = '127.0.0.1';//Test ip
                         generateSdpStreamConfig(streamIp, streamPort, function (err, sdpRtpOfferString) {
                             if (err) {
@@ -242,9 +247,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                                 }
                                 console.log('start process on: rtp://' + streamIp + ':' + streamPort);
                                 console.log('recv sdp answer:', sdpAnswer);
+                                bindFFmpeg(streamIp, streamPort, sdpRtpOfferString, ws);
                                 return callback(null, sdpAnswer);
                             });
                         });
+                        //no need to reply sdpanswer
                         //return callback(null, sdpAnswer);
                     });
                     webRtcEndpoint.gatherCandidates(function (error) {
@@ -311,6 +318,67 @@ function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
     });
 
 }
+/*ffmpeg 
+-protocol_whitelist "file,udp,rtp" 
+-i test.sdp 
+-vcodec copy 
+-f flv 
+rtmp://localhost/live/stream
+*/
+/*
+SDP:
+v=0
+o=- 0 0 IN IP4 127.0.0.1
+s=No Name
+c=IN IP4 127.0.0.1
+t=0 0
+a=tool:libavformat 57.71.100
+m=video 55000 RTP/AVP 96
+b=AS:200
+a=rtpmap:96 H264/90000
+*/
+function bindFFmpeg(streamip, streamport, sdpData, ws) {
+    fs.writeFileSync(streamip + '_' + streamport + '.sdp', sdpData);
+    var ffmpeg_args = [
+        '-protocol_whitelist', '"file,udp,rtp"',
+        '-i', '"' + path.join(__dirname, streamip + '_' + streamport + '.sdp') + '"',
+        '-vcodec', 'copy',
+        '-f', 'flv',
+        'rtmp://localhost/live/stream'
+    ];
+    var child = spawn('ffmpeg', ffmpeg_args);
+    //ignore stdout
+    //this.child.stdout.on('data', this.emit.bind(this, 'data'));
+    child.stderr.on('data', function (data) {
+        ws.send(JSON.stringify({
+            id: 'ffmpeg',
+            message: data.toString()
+        }));
+    });
+
+    child.on('error', function (err) {
+        if (err.code == 'ENOENT') {
+            ws.send(JSON.stringify({
+                id: 'ffmpeg',
+                message: 'The server has not installed ffmpeg yet.'
+            }));
+        } else {
+            ws.send(JSON.stringify({
+                id: 'ffmpeg',
+                message: err
+            }));
+        }
+    });
+
+    child.on('close', function (code) {
+        if (code === 0) {
+            ws.send(JSON.stringify({
+                id: 'ffmpeg',
+                message: streamip + '_' + streamport + ' closed'
+            }));
+        }
+    });
+};
 
 function stop(sessionId) {
     if (sessions[sessionId]) {

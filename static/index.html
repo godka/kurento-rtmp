@@ -22,6 +22,7 @@
 
   <script src="bower_components/kurento-utils/js/kurento-utils.js"></script>
 
+  <script src="/js/swfobject.min.js"></script>
   <script src="js/index.js"></script>
   <title>Kurento-rtp-node</title>
 </head>
@@ -55,8 +56,36 @@
       <div class="col-md-6">
         <video id="videoInput" autoplay width="480px" height="360px" poster="img/webrtc.png"></video>
       </div>
-      <div class="col-md-6">
-        <video id="videoInput" autoplay width="480px" height="360px" poster="img/adobe.jpg"></video>
+      <div class="col-md-6" id="videocontainer">
+        <div id="VideoElement"></div>
+        <script>
+          var parameters = {
+            src: "rtmp://" + location.hostname + "/live/stream",
+            autoPlay: "true",
+            controlBarAutoHide: "true",
+            poster: "img/adobe.jpg",
+            javascriptCallbackFunction: "jsbridge"
+          };
+          console.log(parameters);
+          // Embed the player SWF:
+          swfobject.embedSWF(
+            "GrindPlayer.swf"
+            , "VideoElement"
+            , 480
+            , 360
+            , "10.2"
+            , "expressInstall.swf"
+            , parameters
+            ,
+            {
+              allowFullScreen: "true",
+              wmode: "transparent"
+            }
+            , {
+              name: "GrindPlayer"
+            }
+          );
+        </script>
       </div>
       <div class="col-md-10">
         <a id="start" href="#" class="btn btn-success">
