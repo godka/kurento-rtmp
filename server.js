@@ -351,7 +351,7 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
     var child = spawn('ffmpeg', ffmpeg_args);
     ws.send(JSON.stringify({
         id: 'rtmp',
-        message: 'rtmp://' + location.hostname + '/live/' + streamip + '_' + streamport
+        message: '/live/' + streamip + '_' + streamport
     }));
     //ignore stdout
     //this.child.stdout.on('data', this.emit.bind(this, 'data'));

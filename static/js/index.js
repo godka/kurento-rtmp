@@ -59,7 +59,7 @@ ws.onmessage = function (message) {
 			break;
 		case "rtmp":
 			console.log('Recv rtmp request:', parsedMessage.message);
-			playrtmp(parsedMessage.message);
+			playrtmp('rtmp://' + location.hostname + parsedMessage.message);
 			break;
 		default:
 			if (state == I_AM_STARTING) {
