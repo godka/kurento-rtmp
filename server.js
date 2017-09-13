@@ -272,6 +272,10 @@ function createMediaElements(pipeline, ws, callback) {
         if (error) {
             return callback(error);
         }
+
+        webRtcEndpoint.setMaxVideoRecvBandwidth(200);
+        webRtcEndpoint.setMinVideoRecvBandwidth(100);
+        
         pipeline.create("RtpEndpoint", function (error, rtpEndpoint) {
             if (error) {
                 console.log("Recorder problem");
@@ -395,7 +399,9 @@ function stop(sessionId) {
         var child_process = sessions[sessionId].ffmpeg_child_process;
         if (child_process) {
             console.info('Killing child process');
-            child_process.kill();
+            setTimeout(function () {
+                child_process.kill();
+            }, 2000);
             delete child_process;
         }
         delete sessions[sessionId];
