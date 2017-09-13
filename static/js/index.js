@@ -102,8 +102,8 @@ function playrtmp(rtmpaddress) {
 	swfobject.embedSWF(
 		"GrindPlayer.swf"
 		, "VideoElement"
-		, 480
-		, 360
+		, 320
+		, 240
 		, "10.2"
 		, "expressInstall.swf"
 		, parameters
