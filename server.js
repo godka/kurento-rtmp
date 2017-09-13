@@ -358,9 +358,16 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
     //ignore stdout
     //this.child.stdout.on('data', this.emit.bind(this, 'data'));
     child.stderr.on('data', function (data) {
+        var _len = data.length;
+        var _str;
+        if (data[_len - 1] == 13) {
+            _str = data.toString().substring(0, _len - 1);
+        } else {
+            _str = data.toString();
+        }
         ws.send(JSON.stringify({
             id: 'ffmpeg',
-            message: data.toString().substring(0,data.toString().length - 1)
+            message: _str
         }));
     });
 
