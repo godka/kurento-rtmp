@@ -305,7 +305,7 @@ function generateSdpStreamConfig(nodeStreamIp, port, callback) {
 }
 
 function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
-    webRtcEndpoint.connect(webRtcEndpoint, function (error) {
+    webRtcEndpoint.connect(rtpEndpoint, function (error) {
         if (error) {
             return callback(error);
         }
