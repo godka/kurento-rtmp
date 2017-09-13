@@ -360,7 +360,7 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
     child.stderr.on('data', function (data) {
         ws.send(JSON.stringify({
             id: 'ffmpeg',
-            message: data.toString().replace(/\n/ig,'')
+            message: data
         }));
     });
 
