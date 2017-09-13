@@ -199,14 +199,14 @@ function sendMessage(message) {
 }
 
 function showSpinner() {
-	for (var i = 0; i < arguments.length - 1; i++) {
+	for (var i = 0; i < arguments.length; i++) {
 		arguments[i].poster = './img/transparent-1px.png';
 		arguments[i].style.background = 'center transparent url("./img/spinner.gif") no-repeat';
 	}
 }
 
 function hideSpinner() {
-	for (var i = 0; i < arguments.length - 1; i++) {
+	for (var i = 0; i < arguments.length; i++) {
 		arguments[i].src = '';
 		arguments[i].poster = './img/webrtc.png';
 		arguments[i].style.background = '';
