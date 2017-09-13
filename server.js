@@ -360,7 +360,7 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
     child.stderr.on('data', function (data) {
         ws.send(JSON.stringify({
             id: 'ffmpeg',
-            message: data.toString()
+            message: data.toString().replace(/\n/ig,'')
         }));
     });
 
@@ -397,9 +397,7 @@ function stop(sessionId) {
         var child_process = sessions[sessionId].ffmpeg_child_process;
         if (child_process) {
             console.info('Killing child process');
-            setTimeout(function () {
-                child_process.kill();
-            }, 2000);
+            child_process.kill();
             delete child_process;
         }
         delete sessions[sessionId];
