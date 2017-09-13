@@ -33,7 +33,7 @@ var path = require('path');
 var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8443/',
-        ws_uri: 'ws://localhost:8888/kurento'
+        ws_uri: 'ws://1029.mythkast.net:8888/kurento'
     }
 });
 
@@ -275,13 +275,12 @@ function createMediaElements(pipeline, ws, callback) {
 
         webRtcEndpoint.setMaxVideoRecvBandwidth(200);
         webRtcEndpoint.setMinVideoRecvBandwidth(100);
-        
+
         pipeline.create("RtpEndpoint", function (error, rtpEndpoint) {
             if (error) {
                 console.log("Recorder problem");
                 return callback(error);
             }
-            //rtpEndpoint.record();
             callback(null, webRtcEndpoint, rtpEndpoint);
         });
     });
@@ -306,7 +305,7 @@ function generateSdpStreamConfig(nodeStreamIp, port, callback) {
 }
 
 function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
-    webRtcEndpoint.connect(rtpEndpoint, function (error) {
+    webRtcEndpoint.connect(webRtcEndpoint, function (error) {
         if (error) {
             return callback(error);
         }
@@ -322,7 +321,6 @@ function connectMediaElements(webRtcEndpoint, rtpEndpoint, callback) {
         */
         return callback(null);
     });
-
 }
 /*ffmpeg 
 -protocol_whitelist "file,udp,rtp" 

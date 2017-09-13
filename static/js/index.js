@@ -29,7 +29,7 @@ window.onload = function () {
 	console = new Console();
 	console.log('Page loaded ...');
 	videoInput = document.getElementById('videoInput');
-	videoOutput = document.getElementById('videoOutput');
+	//videoOutput = document.getElementById('videoOutput');
 	setState(I_CAN_START);
 }
 
@@ -80,7 +80,6 @@ function start() {
 
 	var options = {
 		localVideo: videoInput,
-		remoteVideo: videoOutput,
 		onicecandidate: onIceCandidate
 	}
 
@@ -102,8 +101,8 @@ function playrtmp(rtmpaddress) {
 	swfobject.embedSWF(
 		"GrindPlayer.swf"
 		, "VideoElement"
-		, 320
-		, 240
+		, 480
+		, 360
 		, "10.2"
 		, "expressInstall.swf"
 		, parameters
