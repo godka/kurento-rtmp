@@ -432,3 +432,6 @@ function onIceCandidate(sessionId, _candidate) {
 app.use(express.static(path.join(__dirname, 'static')));
 var nms = new NodeMediaServer(rtmp_server_config);
 nms.run();
+process.on('uncaughtException', function (error) {
+    console.log(error);
+});
