@@ -29,7 +29,7 @@ window.onload = function () {
 	console = new Console();
 	console.log('Page loaded ...');
 	videoInput = document.getElementById('videoInput');
-	//videoOutput = document.getElementById('videoOutput');
+	videoOutput = document.getElementById('videoOutput');
 	setState(I_CAN_START);
 }
 
@@ -80,6 +80,7 @@ function start() {
 
 	var options = {
 		localVideo: videoInput,
+		remoteVideo: videoOutput,
 		onicecandidate: onIceCandidate
 	}
 
