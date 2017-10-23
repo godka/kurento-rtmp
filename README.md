@@ -2,7 +2,7 @@
 
 Here is a simple exsample which can provide a pipeline from kurento-webrtc to rtmp server(srs,nginx-rtmp-module).
 
-You can browse https://1029.mythkast.net to see this exsample.
+You can browse https://1029.mythkast.net to see this example.
 
 ![image](https://github.com/godka/kurento-rtmp/raw/master/img/rtp.png)
 
