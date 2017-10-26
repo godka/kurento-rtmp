@@ -298,9 +298,14 @@ function generateSdpStreamConfig(nodeStreamIp, port, callback) {
     sdpRtpOfferString += 's=KMS\n';
     sdpRtpOfferString += 'c=IN IP4 ' + nodeStreamIp + '\n';
     sdpRtpOfferString += 't=0 0\n';
-    sdpRtpOfferString += 'm=video ' + port + ' RTP/AVP 96\n';
-    sdpRtpOfferString += 'a=rtpmap:96 H264/90000\n';
-    sdpRtpOfferString += 'a=fmtp:96 packetization-mode=1\n';
+    sdpRtpOfferString += 'm=audio 49170 RTP/AVP 97\n' ;
+              sdpRtpOfferString += 'a=recvonly\n' ;
+              sdpRtpOfferString += 'a=rtpmap:97 PCMU/8000\n' ;
+              sdpRtpOfferString += 'a=fmtp:97 profile-level-id=1;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3;config=1508\n' ;
+sdpRtpOfferString += 'm=video ' + port + ' RTP/AVP 96\n';
+sdpRtpOfferString += 'a=rtpmap:96 H264/90000\n';
+
+sdpRtpOfferString += 'a=fmtp:96 packetization-mode=1\n';
     return callback(null, sdpRtpOfferString);
 }
 
@@ -347,7 +352,8 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
         '-protocol_whitelist', 'file,udp,rtp',
         '-i', path.join(__dirname, streamip + '_' + streamport + '.sdp'),
         '-vcodec', 'copy',
-        '-f', 'flv',
+'-acodec', 'copy',
+'-f', 'flv',
         'rtmp://localhost/live/' + streamip + '_' + streamport
     ].concat();
     var child = spawn('ffmpeg', ffmpeg_args);

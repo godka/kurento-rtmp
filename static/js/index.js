@@ -81,7 +81,14 @@ function start() {
 	var options = {
 		localVideo: videoInput,
 		remoteVideo: videoOutput,
-		onicecandidate: onIceCandidate
+		onicecandidate: onIceCandidate,
+		mediaConstraints: {
+      audio: true,
+      video: {
+        width: 620,
+        framerate: 15
+      }
+    }
 	}
 
 	webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
