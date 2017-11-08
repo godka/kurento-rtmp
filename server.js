@@ -230,10 +230,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                         console.log('my session id:', sessionId);
-                        var streamPort = 55000 + session_index;
+                        var streamPort = 55000 + (session_index * 2);
+                        var audioPort = 49170 + (session_index * 2);
                         session_index++;    //change to next port
                         var streamIp = '127.0.0.1';//Test ip
-                        generateSdpStreamConfig(streamIp, streamPort, function (err, sdpRtpOfferString) {
+                        generateSdpStreamConfig(streamIp, streamPort, audioPort, function (err, sdpRtpOfferString) {
                             if (err) {
                                 return callback(error);
                             }
@@ -286,7 +287,7 @@ function createMediaElements(pipeline, ws, callback) {
     });
 }
 
-function generateSdpStreamConfig(nodeStreamIp, port, callback) {
+function generateSdpStreamConfig(nodeStreamIp, port, audioport, callback) {
     if (typeof nodeStreamIp === 'undefined'
         || nodeStreamIp === null
         || typeof port === 'undefined'
@@ -298,14 +299,13 @@ function generateSdpStreamConfig(nodeStreamIp, port, callback) {
     sdpRtpOfferString += 's=KMS\n';
     sdpRtpOfferString += 'c=IN IP4 ' + nodeStreamIp + '\n';
     sdpRtpOfferString += 't=0 0\n';
-    sdpRtpOfferString += 'm=audio 49170 RTP/AVP 97\n' ;
-              sdpRtpOfferString += 'a=recvonly\n' ;
-              sdpRtpOfferString += 'a=rtpmap:97 PCMU/8000\n' ;
-              sdpRtpOfferString += 'a=fmtp:97 profile-level-id=1;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3;config=1508\n' ;
-sdpRtpOfferString += 'm=video ' + port + ' RTP/AVP 96\n';
-sdpRtpOfferString += 'a=rtpmap:96 H264/90000\n';
-
-sdpRtpOfferString += 'a=fmtp:96 packetization-mode=1\n';
+    sdpRtpOfferString += 'm=audio ' + audioport + ' RTP/AVP 97\n';
+    sdpRtpOfferString += 'a=recvonly\n';
+    sdpRtpOfferString += 'a=rtpmap:97 PCMU/8000\n';
+    sdpRtpOfferString += 'a=fmtp:97 profile-level-id=1;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3;config=1508\n';
+    sdpRtpOfferString += 'm=video ' + port + ' RTP/AVP 96\n';
+    sdpRtpOfferString += 'a=rtpmap:96 H264/90000\n';
+    sdpRtpOfferString += 'a=fmtp:96 packetization-mode=1\n';
     return callback(null, sdpRtpOfferString);
 }
 
@@ -352,8 +352,8 @@ function bindFFmpeg(streamip, streamport, sdpData, ws) {
         '-protocol_whitelist', 'file,udp,rtp',
         '-i', path.join(__dirname, streamip + '_' + streamport + '.sdp'),
         '-vcodec', 'copy',
-'-acodec', 'copy',
-'-f', 'flv',
+        '-acodec', 'copy',
+        '-f', 'flv',
         'rtmp://localhost/live/' + streamip + '_' + streamport
     ].concat();
     var child = spawn('ffmpeg', ffmpeg_args);
