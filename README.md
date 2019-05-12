@@ -1,12 +1,12 @@
 # kurento-rtmp #
 
-Here is a simple demo which can provide a pipeline from kurento-webrtc to rtmp server(srs,nginx-rtmp-module).
+Here is a simple demo which can provide a pipeline from kurento-webrtc to rtmp server (eg., srs, nginx-rtmp-module, etc.).
 
-You can browse https://1029.mythkast.net to see this example.
+You can browse https://1029.mythkast.net to test this demo.
 
 ![image](https://github.com/godka/kurento-rtmp/raw/master/img/rtp.png)
 
-The pipeline is probably like this:
+The pipeline of the work is described as follows:
 
 ```
 [Browser] -> WebrtcEndpoint -> [Kurento] -> RtpEndpoint -> 
@@ -25,9 +25,9 @@ The pipeline is probably like this:
 7.Click Start button and have fun!
 ```
 
-## Caution ##
+## Notation ##
 
-Before running this demo,you must have build FFmpeg and Kurento Media Server on your server.
+Before running this demo,you must have build *FFmpeg* and *Kurento Media Server* on your server.
 
 ## Licensing and distribution ##
 
