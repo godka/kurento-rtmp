@@ -15,6 +15,7 @@
  *
  */
 const NodeMediaServer = require('node-media-server').NodeMediaServer;
+
 var path = require('path');
 var url = require('url');
 var cookieParser = require('cookie-parser')
@@ -25,10 +26,7 @@ var ws = require('ws');
 var kurento = require('kurento-client');
 var fs = require('fs');
 var https = require('https');
-var childProcess = require('child_process');
-var spawn = childProcess.spawn;
-var fs = require("fs");
-var path = require('path');
+var spawn = require('child_process').spawn;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -98,9 +96,8 @@ var wss = new ws.Server({
 /*
  * Management of WebSocket messages
  */
-wss.on('connection', function (ws) {
+wss.on('connection', function (ws, request) {
     var sessionId = null;
-    var request = ws.upgradeReq;
     var response = {
         writeHead: {}
     };
